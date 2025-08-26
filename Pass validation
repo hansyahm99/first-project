@@ -1,0 +1,42 @@
+import string
+
+def validaasi_password(password):
+
+  minimal_input = 8
+  ada_huruf_besar = False
+  ada_huruf_kecil = False
+  ada_angka = False
+  ada_simbol = False
+
+  if len(password) <= minimal_input:
+    print("Password minimal harus 8 karakter")
+    return False
+
+  for char in password:
+    if char.isupper():
+      ada_huruf_besar = True
+    elif char.islower():
+      ada_huruf_kecil = True
+    elif char.isdigit():
+      ada_angka = True
+    elif char in string.punctuation:
+      ada_simbol = True
+
+  if not ada_huruf_besar:
+    print("password harus ada huruf besar")
+  if not ada_huruf_besar:
+    print("password harus ada huruf kecil")
+  if not ada_angka:
+    print("harus ada angka")
+  if not ada_simbol:
+    print("harus ada simbol contoh(!,#,$,%,&)")
+
+  if all([ada_huruf_besar, ada_huruf_kecil, ada_angka, ada_simbol]):
+    print("password valid")
+
+  else:
+    print("password tidak valid")
+    return False
+
+Password_user = input("Masukan Password : ")
+validaasi_password(Password_user)
