@@ -1,0 +1,23 @@
+variabel = input("Please input(+,-,/,%,*,**,^) : ")
+first = int(input("Input Number : "))
+next_input = int(input("Input Next Number : "))
+
+
+if  variabel == "+":
+    print(first + next_input)
+elif variabel == "-":
+    print(first - next_input)
+elif variabel == "/":
+    print(first / next_input)
+elif variabel == "%":
+    print(first % next_input) 
+elif variabel == "*":
+    print(first * next_input)
+elif variabel == "^":
+    print(first ^ next_input)
+elif variabel == "**":
+    print(first ** next_input)
+else:
+    print("Invalid Input")
+
+print("Thank you has been use this Calculator")
