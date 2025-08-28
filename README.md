@@ -1,2 +1,2 @@
-# first-project
-just for try
+# Pyton 
+Result from train
