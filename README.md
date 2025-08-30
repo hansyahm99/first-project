@@ -1,2 +1,2 @@
 # Pyton 
-Result from train
+Result from learn
