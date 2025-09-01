@@ -1,74 +1,106 @@
-#def Team():
-    #Data = {
-        #"Edi": {"Daily Payment": 831944, "Recovery": 5.22},
-        #"Annisa": {"Daily Payment": 0, "Recovery": 11.44},
-        #"Riska": {"Daily Payment": 0, "Recovery": 14.94},
-        #"Syarla": {"Daily Payment": 417535, "Recovery": 10.01},
-        #"Yandi": {"Daily Payment": 0, "Recovery": 9.84},
-        #"Yolanda": {"Daily Payment": 0, "Recovery": 8.85},
-        #"Erick": {"Daily Payment": 1016867, "Recovery": 10.86},
-        #"Azizah": {"Daily Payment": 0, "Recovery": 10.00},
-        #"Aldi": {"Daily Payment": 0, "Recovery": 6.90},
-        #"Ika": {"Daily Payment": 0, "Recovery": 9.60},
-        #"Debora": {"Daily Payment": 2565358, "Recovery": 10.64},
-        #"Romli": {"Daily Payment": 4331792, "Recovery": 9.88},
-        #"Ridhoi": {"Daily Payment": 0, "Recovery": 8.35},
-        #"Fadilah": {"Daily Payment": 1472732, "Recovery": 7.33},
-        #"Erlangga": {"Daily Payment": 1459348, "Recovery": 6.68},
-        #"Nur": {"Daily Payment": 1013743, "Recovery": 7.40},
-        #"Adistira": {"Daily Payment": 0, "Recovery": 7.60},
-        #"Axl": {"Daily Payment": 2142137, "Recovery": 5.22}
-        #}
-    #for key, value in Data.items():
-        #print(f"{key}: {value}\n")
-#Team() 
+import matplotlib.pyplot as plt
 
 Data = {
-        "Edi Supriyanto"            :1196944,
-        "Annisa Putri Restu"        :694228,
-        "Riska Nurlita"             :849543,
-        "Syarla Putri Guna"         :1095931,
-        "Yandi Nugraha"             :981046,
-        "Yolanda Oktaviani"         :3030997,
-        "Erick Ervan Dewanggga"     :1575050,
-        "Azizah Rahmawati"          :296411,
-        "Aldi Taufik"               :3098808,
-        "Ika Juliasari"             :2094764,
-        "Debora Retima Sihombing"   :4317521,
-        "Romli"                     :149098,
-        "Ridhoi Berkat Zebua"       :6169604,
-        "Fadilah Damayanti"         :6704840,
-        "Erlangga Hutama"           :3638361,
-        "Nur Halim"                 :3000531, 
-        "Adistira Winditya P"       :0, 
-        "Axl Wicaksono"             :2142137
+        "Edi Supriyanto"            :1205405,
+        "Annisa Putri Restu"        :2535144,
+        "Riska Nurlita"             :1477195,
+        "Syarla Putri Guna"         :552595,
+        "Yandi Nugraha"             :601647,
+        "Yolanda Oktaviani"         :595048,
+        "Erick Ervan Dewanggga"     :0,
+        "Azizah Rahmawati"          :0,
+        "Aldi Taufik"               :677567,
+        "Ika Juliasari"             :0,
+        "Debora Retima Sihombing"   :1762000,
+        "Romli"                     :750631,
+        "Ridhoi Berkat Zebua"       :0,
+        "Fadilah Damayanti"         :3039655,
+        "Erlangga Hutama"           :596045,
+        "Nur Halim"                 :3259599, 
+        "Adistira Winditya P"       :5869259, 
+        "Axl Wicaksono"             :732792
         }
 
-Tim = {"Hansyah_s2l" : {f"Daily paid": 39583010, "Paid amount": 858030646, "Total_amount": 8908510820 }}
+nama = list(Data.keys())
+values = list(Data.values())
+
+plt.figure(figsize=(14, 10))
+
+plt.barh(nama, values, color='orange')
+
+plt.title("Report Daily 30 Agustus 2025")
+plt.xlabel("Payment (in units)")
+plt.ylabel("Name")
+
+plt.xlim(0,max(values)* 1.1)
+
+max_val = max(values)
+for ninja, samurai in enumerate(values):
+    if samurai > 0:
+
+        threshold = max_val * 0.08
+
+        if samurai >= threshold:
+            plt.text(samurai - (max_val*0.01), ninja, f"Rp {samurai:,}", va='center', fontsize=10, ha='right', color='black')
+        
+        else:
+            plt.text(samurai + (max_val*0.1), ninja, f"Rp {samurai:,}", va='center', fontsize=12, ha='right', color='black')
+
+plt.subplots_adjust(left=0.3, right=0.95,bottom=0.05)
+plt.tight_layout()
+plt.savefig("grafik_bar_daily_payment.png", dpi=100)
+plt.show()
+
+Tim = {"Hansyah_s2l" : {f"Daily paid": 8547124, "Paid amount": 935512454, "Total amount": 9365024946 }}
 
 Monthly = {
-        "Edi Supriyanto"            :9.19,
-        "Annisa Putri Restu"        :11.44,
-        "Riska Nurlita"             :14.94,
-        "Syarla Putri Guna"         :10.01,
-        "Yandi Nugraha"             :9.84,
-        "Yolanda Oktaviani"         :8.85,
-        "Erick Ervan Dewanggga"     :10.86,
-        "Azizah Rahmawati"          :10.00,
-        "Aldi Taufik"               :6.90,
-        "Ika Juliasari"             :9.60,
-        "Debora Retima Sihombing"   :10.64,
-        "Romli"                     :9.88,
-        "Ridhoi Berkat Zebua"       :8.35,
-        "Fadilah Damayanti"         :7.33,
-        "Erlangga Hutama"           :6.68,
-        "Nur Halim"                 :7.40, 
-        "Adistira Winditya P"       :7.60, 
-        "Axl Wicaksono"             :5.22
+        "Edi Supriyanto"            :9.02,
+        "Annisa Putri Restu"        :11.40,
+        "Riska Nurlita"             :14.64,
+        "Syarla Putri Guna"         :9.99,
+        "Yandi Nugraha"             :9.31,
+        "Yolanda Oktaviani"         :9.36,
+        "Erick Ervan Dewanggga"     :11.02,
+        "Azizah Rahmawati"          :9.61,
+        "Aldi Taufik"               :7.99,
+        "Ika Juliasari"             :10.00,
+        "Debora Retima Sihombing"   :11.44,
+        "Romli"                     :10.17,
+        "Ridhoi Berkat Zebua"       :9.32,
+        "Fadilah Damayanti"         :8.92,
+        "Erlangga Hutama"           :7.28,
+        "Nur Halim"                 :8.08, 
+        "Adistira Winditya P"       :8.47, 
+        "Axl Wicaksono"             :6.53
         }
+
+bulan = list(Monthly.keys())
+hasil = list(Monthly.values())
+
+plt.figure(figsize=(14, 10))
+plt.barh(bulan, hasil, color='orange')
+
+plt.title("Report Montly Agustus 2025")
+plt.xlabel("rate(in unit)")
+plt.ylabel("Name")
+
+plt.xlim(0,max(hasil)* 1.1)
+
+max_month = max(hasil)
+for riska, nurlita in enumerate(values):
+    if nurlita > 0:
+        plt.text(nurlita - (max_month*0.05), riska, f"{nurlita:.2f}", va='center', ha='left', color='black', fontsize=10, fontweight ='bold')
+        
+
+plt.subplots_adjust(left=0.2, right=0.95,bottom=0.05)
+plt.tight_layout()
+plt.savefig("grafik_Monthly_Agustus.png", dpi=100)
+plt.show()
 
 Target = 7237417 
 total_payment = 0
+total_average = 0.0
+average_result = 0
 
 print("\n--------------------------------------------------------------------")
 print("REPORT TEAM S2")
@@ -84,15 +116,18 @@ for name, payment in Data.items():
 highest_name = max(Data, key=Data.get)
 highest_Payment = Data[highest_name]
 
-print("\n--------------------------------------------------------------------")
+print()
 print(f"Total pembayaran hari ini : Rp {total_payment}")
 print()
 print(f"Pembayaran tertinggi: {highest_name} : Rp {highest_Payment}")
+print("\n--------------------------------------------------------------------")
+print("PAYMENT TEAM S2 AGUSTUS")
 print()
 for hans, Tim in Tim.items():
     print(f"{hans}:")
     for key, value in Tim.items():
         print(f"    {key:<14}: Rp {value} ")
+
     print()
 
 print("--------------------------------------------------------------------")
@@ -102,7 +137,10 @@ print()
 for exe, paid in Monthly.items():
     print(f"{exe:<24}: {paid:<24}")
 
+    total_average += paid
+
+average_result = total_average / len(Monthly)
+
+print()
+print(f"Average Team : {average_result:.2f} %")
 print("--------------------------------------------------------------------")
-
-    
-
