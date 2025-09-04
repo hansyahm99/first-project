@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd 
 
-df = pd.read_excel("miki2.xlsx")
+df = pd.read_excel("miki.xlsx")
 df = df.fillna(0)
 df["Repayment_amount"] = df['Repayment_amount'].astype(int)
 Data = dict(zip(df['Collector'],df['Repayment_amount']))
@@ -13,7 +13,7 @@ values = list(Data.values())
 
 plt.figure(figsize=(16, 12))
 
-plt.barh(nama, values, color='orange')
+plt.barh(nama, values, color='pink') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
 
 today = datetime.today().strftime('%d %B %Y')
 
@@ -51,27 +51,27 @@ bulan = list(Monthly.keys())
 hasil = list(Monthly.values())
 
 plt.figure(figsize=(16, 12))
-plt.barh(bulan, hasil, color='orange')
+plt.barh(bulan, hasil, color='aqua') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
 
 plt.title("Report Montly September 2025")
 plt.xlabel("Pending Amount Recovery(in unit)")
 plt.ylabel("Collector")
 
-plt.xlim(0,max(hasil)* 1.1)
+plt.xlim(0,max(hasil)* 1.2)
 
-def format_number(riska):
-    return f"{riska:.2f}".rstrip('0').rstrip('.') if isinstance(riska, float) else str(riska)
+def format_number(lagos):
+    return f"{lagos:.2f}".rstrip('0').rstrip('.') if isinstance(lagos, float) else str(lagos)
 
 max_month = max(hasil)
-for riska, nurlita in enumerate(hasil):
-    if riska > 0:
+for lagos, kilimanjaro in enumerate(hasil):
+    if kilimanjaro > 0:
         threshold = max_month * 0.08
-        label = format_number(nurlita)
+        label = format_number(kilimanjaro)
 
-        if nurlita > threshold:
-            plt.text(nurlita - (max_month*0.05), riska, label, va='center', ha='left', color='black', fontsize=10, fontweight='bold')
+        if kilimanjaro > threshold:
+            plt.text(kilimanjaro - (max_month*0.05), lagos, label, va='center', ha='left', color='black', fontsize=10, fontweight='bold')
         else:
-            plt.text(nurlita + (max_month*0.05), riska, label, va='center', ha='left', color='black', fontsize=10, fontweight='bold')
+            plt.text(kilimanjaro + (max_month*0.05), lagos, label, va='center', ha='left', color='black', fontsize=10, fontweight='bold')
 
 plt.subplots_adjust(left=0.25, right=0.95, bottom=0.05)
 plt.tight_layout()
