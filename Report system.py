@@ -1,9 +1,8 @@
-
 import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd 
 
-df = pd.read_excel("miki.xlsx")
+df = pd.read_excel("riska.xlsx")
 df = df.fillna(0)
 df["Repayment_amount"] = df['Repayment_amount'].astype(int)
 Data = dict(zip(df['Collector'],df['Repayment_amount']))
@@ -13,11 +12,11 @@ values = list(Data.values())
 
 plt.figure(figsize=(16, 12))
 
-plt.barh(nama, values, color='pink') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
+plt.barh(nama, values, color='teal') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
 
 today = datetime.today().strftime('%d %B %Y')
 
-plt.title(f"Report Daily {today}", loc='center')
+plt.title(f"Report Daily {today} ( Target Rp 7.000.000 )", loc='center')
 plt.xlabel("Repayment_amount (in units)")
 plt.ylabel("Collector")
 
@@ -39,21 +38,47 @@ plt.tight_layout()
 plt.savefig("grafik_bar_daily_payment.png", dpi=100)
 plt.show()
 
-Tim = {"Hansyah_s2l" : {f"Daily paid": 25751587, "Paid amount": 25751587, "Total amount": 2622342443 }}
+df = pd.read_excel("risnur.xlsx")
+df = df.fillna(0)
 
-df = pd.read_excel("isel.xlsx")
+df["Recovery rate float"] = (
+    df['Recovery rate']
+    .astype(str)
+    .str.replace(',', '.')
+    .str.replace('%', '')
+    .astype(float)
+    )
+
+df["Recovery rate str"] = df["Recovery rate float"].map(lambda x: f"{x:.3f}")
+
+df["Label"] = df["Team"] + "("+ df["Recovery rate str"] + ")"
+
+team = df["Label"].tolist()
+rate = df["Recovery rate float"].tolist()
+
+plt.figure(figsize=(8, 8))
+today = datetime.today().strftime('%d %B %Y')
+
+plt.title(f"Report Cycle S2 {today} ( Target 12.52% )", loc='center')
+
+plt.pie(rate, labels=team, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors)
+plt.axis('equal') 
+plt.tight_layout()
+plt.savefig("grafik_Cycle_S2.png", dpi=100)
+plt.show()
+
+df = pd.read_excel("nurlita.xlsx")
 df = df.fillna(0)
 df["Pending Amount Recovery"] = df['Pending Amount Recovery'].astype(float)
 Monthly = dict(zip(df['Collector'],df['Pending Amount Recovery']))
-
 
 bulan = list(Monthly.keys())
 hasil = list(Monthly.values())
 
 plt.figure(figsize=(16, 12))
-plt.barh(bulan, hasil, color='aqua') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
+plt.barh(bulan, hasil, color='orange') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
 
-plt.title("Report Montly September 2025")
+plt.title("Report Mohtnly September 2025")
 plt.xlabel("Pending Amount Recovery(in unit)")
 plt.ylabel("Collector")
 
@@ -90,7 +115,7 @@ print()
 
 for name, payment in Data.items():
     status = "belum target" if payment<= Target else "Target"
-    print(f"{name:<24}: Rp {payment:<24} {status}")
+    print(f"{name:<25}: Rp {payment:<18} {status}")
 
     total_payment += payment
 
@@ -102,6 +127,10 @@ print(f"Total pembayaran hari ini : Rp {total_payment}")
 print()
 print(f"Pembayaran tertinggi: {highest_name} : Rp {highest_Payment}")
 print("\n--------------------------------------------------------------------")
+
+# Paid amount dan Total amount masih di isi manual.
+Tim = {"Hansyah_s2l" : {f"Daily paid": total_payment, "Paid amount": 171981376, "Total amount": 3318720615 }}
+
 print("PAYMENT TEAM S2 AGUSTUS")
 print()
 for hans, Tim in Tim.items():
@@ -114,9 +143,11 @@ for hans, Tim in Tim.items():
 print("--------------------------------------------------------------------")
 print("MONTHLY RECOVERY S2")
 print()
+print("Target 12.52%")
+print()
 
 for exe, paid in Monthly.items():
-    print(f"{exe:<24}: {paid:<24}")
+    print(f"{exe:<25}: {paid:<25}")
 
     total_average += paid
 
