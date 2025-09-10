@@ -3,8 +3,15 @@ from datetime import datetime
 import pandas as pd 
 
 df = pd.read_excel("riska.xlsx")
+df = df[['Collector','Repayment_amount']].copy()
 df = df.fillna(0)
-df["Repayment_amount"] = df['Repayment_amount'].astype(int)
+df["Repayment_amount"] = (df['Repayment_amount']
+.astype(str)
+.str.replace(',', '')
+.str.replace('.00', '')
+.astype(int)
+)
+
 Data = dict(zip(df['Collector'],df['Repayment_amount']))
 
 nama = list(Data.keys())
@@ -38,7 +45,8 @@ plt.tight_layout()
 plt.savefig("grafik_bar_daily_payment.png", dpi=100)
 plt.show()
 
-df = pd.read_excel("risnur.xlsx")
+df = pd.read_excel("riskuy.xlsx")
+df = df[['Team','Recovery rate']].copy()
 df = df.fillna(0)
 
 df["Recovery rate float"] = (
@@ -68,7 +76,10 @@ plt.savefig("grafik_Cycle_S2.png", dpi=100)
 plt.show()
 
 df = pd.read_excel("nurlita.xlsx")
+df = df[['Collector','Pending Amount Recovery']].copy()
+df = df [df['Collector'] != 'Hansyah Martha Kusuma D']
 df = df.fillna(0)
+
 df["Pending Amount Recovery"] = df['Pending Amount Recovery'].astype(float)
 Monthly = dict(zip(df['Collector'],df['Pending Amount Recovery']))
 
@@ -78,7 +89,7 @@ hasil = list(Monthly.values())
 plt.figure(figsize=(16, 12))
 plt.barh(bulan, hasil, color='orange') #color(red, pink, blue, green, cyan, black, yellow, orange, teal, aqua, lime, brown)
 
-plt.title("Report Mohtnly September 2025")
+plt.title("Report Mohtnly September 2025 ( Target 12.52 )")
 plt.xlabel("Pending Amount Recovery(in unit)")
 plt.ylabel("Collector")
 
