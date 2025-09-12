@@ -68,12 +68,12 @@ team = df_cycle["Label"].tolist()
 rate = df_cycle["Recovery rate float"].tolist()
 
 # Pie Chart
-fig2, ax2 = plt.subplots(figsize=(3, 3), dpi=800)
-pacthes, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors, textprops={'fontsize': 4})
-ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize= 8,  fontweight='bold')
+fig2, ax2 = plt.subplots(figsize=(3, 3), dpi=200)
+pacthes, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors, textprops={'fontsize': 7})
+ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize= 7,  fontweight='bold')
 ax2.axis('equal')
 
-ax2.legend(pacthes, team, loc='center left', bbox_to_anchor=(1, 0.5), fontsize=4)
+ax2.legend(pacthes, team, loc='center left', bbox_to_anchor=(0.5, -0.1), fontsize=7, ncol=2)
 
 st.pyplot(fig2)
 st.dataframe(df_cycle[['Team', 'Recovery rate']])
