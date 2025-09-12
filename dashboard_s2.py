@@ -70,7 +70,7 @@ rate = df_cycle["Recovery rate float"].tolist()
 # Pie Chart
 fig2, ax2 = plt.subplots(figsize=(5, 5))
 ax2.pie(rate, labels=team, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors)
-ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontweight='bold')
+ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize= 8, fontweight='bold')
 ax2.axis('equal')
 
 st.pyplot(fig2)
