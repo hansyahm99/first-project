@@ -46,8 +46,9 @@ for i, val in enumerate(values):
             ax1.text(val + (max_val*0.1), i, f"Rp {val:,}", va='center', fontsize=10, ha='right', color='black')
 
 ax1.invert_yaxis()
-st.pyplot(fig1)
 
+df_daily.index = df_daily.index + 1
+st.pyplot(fig1)
 st.dataframe(df_daily.rename(columns={"Repayment_amount": "Repayment Amount"}))
 
 # ===================== CYCLE REPORT =====================
@@ -68,13 +69,14 @@ team = df_cycle["Label"].tolist()
 rate = df_cycle["Recovery rate float"].tolist()
 
 # Pie Chart
-fig2, ax2 = plt.subplots(figsize=(3, 3), dpi=200)
-pacthes, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors, textprops={'fontsize': 7})
+fig2, ax2 = plt.subplots(figsize=(2.5, 2.5), dpi=200)
+pacthes, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors, textprops={'fontsize': 6})
 ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize= 7,  fontweight='bold')
 ax2.axis('equal')
 
 ax2.legend(pacthes, team, loc='center left', bbox_to_anchor=(0.5, -0.10), fontsize=6, ncol=3)
 
+df_cycle.index = df_cycle.index + 1
 st.pyplot(fig2)
 st.dataframe(df_cycle[['Team', 'Recovery rate']])
 
@@ -112,9 +114,28 @@ for i, val in enumerate(hasil):
             ax3.text(val + 0.3, i, label, va='center', ha='right', fontsize=10, color='black')
 
 ax3.invert_yaxis()
-st.pyplot(fig3)
 
+df_monthly.index = df_monthly.index + 1
+st.pyplot(fig3)
 st.dataframe(df_monthly)
+
+#====================== RANK AGENT ==================
+st.header(f"🔁 Report Cycle S2 - {today}")
+df_rank = pd.read_excel("risnur.xlsx")[['Team', 'Collector', 'Monthly Pending Total(Rp)', 'Repayment', 'Recovery rate']].fillna(0)
+
+df_rank['_sort_rate']= (
+    df_rank['Recovery rate']
+    .astype(str)
+    .str.replace(',', '.')
+    .str.replace('%', '')
+    .astype(float)
+)
+
+df_rank_sorted= df_rank.sort_values(by="_sort_rate", ascending=False).drop(columns="_sort_rate")
+df_rank_sorted.index = df_rank_sorted.index + 1
+
+st.subheader("📈 Rank Agent Table (sorted by Recovery Rate)")
+st.dataframe(df_rank_sorted)
 
 # ===================== SUMMARY =====================
 st.header("📌 Summary Report")
