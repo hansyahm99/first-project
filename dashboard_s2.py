@@ -151,7 +151,7 @@ st.write(f"**Total Pembayaran Hari Ini:** Rp {total_payment:,}")
 st.write(f"**Pembayaran Tertinggi:** {highest_name} - Rp {highest_payment:,}")
 
 # Status Per Collector
-st.write("### Status Collector vs Target:")
+st.write("### Status Collector and Target:")
 status_data = []
 for name, val in Data.items():
     status = "✅ Target" if val > Target else "❌ Belum Target"
