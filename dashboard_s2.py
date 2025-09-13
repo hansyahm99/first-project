@@ -24,7 +24,7 @@ nama = list(Data.keys())
 values = list(Data.values())
 
 # Bar Chart
-fig1, ax1 = plt.subplots(figsize=(12, 6))
+fig1, ax1 = plt.subplots(figsize=(10, 4))
 ax1.barh(nama, values, color='teal')
 ax1.set_title(f"Report Daily {today} (Target Rp 7.000.000)", fontweight='bold')
 ax1.set_xlim(0, max(values)*1.1)
@@ -41,9 +41,9 @@ for i, val in enumerate(values):
     if val > 0:
         threshold = max_val * 0.08
         if val >= threshold:
-            ax1.text(val - (max_val*0.01), i, f"Rp {val:,}", va='center', fontsize=10, ha='right', color='black')
+            ax1.text(val - (max_val*0.01), i, f"Rp {val:,}", va='center', fontsize=8, ha='right', color='black')
         else:
-            ax1.text(val + (max_val*0.1), i, f"Rp {val:,}", va='center', fontsize=10, ha='right', color='black')
+            ax1.text(val + (max_val*0.1), i, f"Rp {val:,}", va='center', fontsize=8, ha='right', color='black')
 
 ax1.invert_yaxis()
 
