@@ -161,7 +161,7 @@ for name, val in Data.items():
 
 df_status = pd.DataFrame(status_data)
 df_status.index = df_status.index + 1
-st.dataframe(status_data)
+st.dataframe(df_status)
 
 # Monthly Recovery Summary
 st.subheader("📊 Monthly Recovery Summary")
