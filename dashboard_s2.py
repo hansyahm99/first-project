@@ -42,9 +42,9 @@ for i, val in enumerate(values):
     if val > 0:
         threshold = max_val * 0.08
         if val >= threshold:
-            ax1.text(val - (max_val*0.01), i, f"Rp {val:,}", va='center', fontsize=8, ha='right', color='black')
+            ax1.text(val - (max_val*0.01), i, f"Rp {val:,}", va='center', fontsize=6, ha='right', color='black')
         else:
-            ax1.text(val + (max_val*0.1), i, f"Rp {val:,}", va='center', fontsize=8, ha='right', color='black')
+            ax1.text(val + (max_val*0.1), i, f"Rp {val:,}", va='center', fontsize=6, ha='right', color='black')
 
 ax1.invert_yaxis()
 
