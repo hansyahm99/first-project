@@ -169,3 +169,12 @@ st.write("**Target Recovery:** 12.52%")
 average_result = sum(hasil) / len(hasil)
 st.write(f"**Rata-rata Recovery Tim:** {average_result:.2f} %")
 
+hansyah_data = df_rank[df_rank['Team']=='Hansyah_S2l'].copy()
+hansyah_data['Repayment'] = hansyah_data['Repayment'].astype(str).str.replace(',', '').astype(float)
+hansyah_data['Monthly Pending Total(Rp)'] = hansyah_data['Monthly Pending Total(Rp)'].astype(str).str.replace(',', '').astype(float)
+total_repayment_hansyah = hansyah_data['Repayment'].sum()
+total_unpaid_hansyah = hansyah_data['Monthly Pending Total(Rp)'].sum()
+
+st.write(f"**Total Repayment (Team Hansyah_S2l):** Rp {total_repayment_hansyah:,.0f}")
+st.write(f"**Total Unpaid (Team Hansyah_S2l):** Rp {total_unpaid_hansyah:,.0f}")
+
