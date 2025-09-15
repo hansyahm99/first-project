@@ -94,7 +94,7 @@ hasil = list(Monthly.values())
 # Bar Chart
 fig3, ax3 = plt.subplots(figsize=(12, 6))
 ax3.barh(bulan, hasil, color='orange')
-ax3.set_title("Monthly Pending Recovery (Target: 12.52)", fontweight='bold')
+ax3.set_title("Monthly Pending Recovery (Target: 12.52%)", fontweight='bold')
 ax3.set_xlabel("Pending Amount Recovery")
 ax3.get_xaxis().set_visible(False)
 ax3.set_ylabel("Collector")
@@ -104,7 +104,7 @@ for spine in ax3.spines.values():
     spine.set_visible(False)
 
 def format_number(val):
-    return f"{val:.2f}".rstrip('0').rstrip('.') if isinstance(val, float) else str(val)
+    return f"{val:.2f}%".rstrip('0').rstrip('.') if isinstance(val, float) else str(val)
 
 max_month = max(hasil)
 for i, val in enumerate(hasil):
