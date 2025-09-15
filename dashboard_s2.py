@@ -75,7 +75,7 @@ pacthes, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, col
 ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize= 7,  fontweight='bold')
 ax2.axis('equal')
 
-ax2.legend(pacthes, team, loc='center left', bbox_to_anchor=(0.5, -0.10), fontsize=6, ncol=3)
+ax2.legend(pacthes, team, loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=6, ncol=3)
 
 df_cycle.index = df_cycle.index + 1
 st.pyplot(fig2)
