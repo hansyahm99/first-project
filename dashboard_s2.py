@@ -165,9 +165,9 @@ st.dataframe(df_status)
 
 # Monthly Recovery Summary
 st.subheader("📊 Monthly Recovery Summary")
-st.write("**Target Recovery:** 12.52%")
+st.write("**Target Recovery :** 12.52%")
 average_result = sum(hasil) / len(hasil)
-st.write(f"**Rata-rata Recovery Tim:** {average_result:.2f} %")
+st.write(f"**Rata-rata Recovery Tim :** {average_result:.2f} %")
 
 hansyah_data = df_rank[df_rank['Team']=='Hansyah_S2l'].copy()
 hansyah_data['Repayment'] = hansyah_data['Repayment'].astype(str).str.replace(',', '').astype(float)
