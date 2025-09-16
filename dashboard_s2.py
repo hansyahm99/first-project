@@ -142,7 +142,7 @@ st.dataframe(df_rank_sorted)
 # ===================== SUMMARY =====================
 st.header("📌 Summary Report")
 
-Target = 7237417 
+Target = 7000000 
 total_payment = sum(Data.values())
 highest_name = max(Data, key=Data.get)
 highest_payment = Data[highest_name]
