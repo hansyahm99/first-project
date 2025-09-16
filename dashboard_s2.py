@@ -148,9 +148,9 @@ highest_name = max(Data, key=Data.get)
 highest_payment = Data[highest_name]
 
 st.subheader("🎯 Daily Payment Summary")
-st.write(f"**Target Harian:** Rp {Target:,}")
-st.write(f"**Total Pembayaran Hari Ini:** Rp {total_payment:,}")
-st.write(f"**Pembayaran Tertinggi:** {highest_name} - Rp {highest_payment:,}")
+st.write(f"**Target Harian :** Rp {Target:,}")
+st.write(f"**Total Pembayaran Hari Ini :** Rp {total_payment:,}")
+st.write(f"**Pembayaran Tertinggi :** {highest_name} - Rp {highest_payment:,}")
 
 # Status Per Collector
 st.write("### Status Collector and Target:")
@@ -175,6 +175,6 @@ hansyah_data['Monthly Pending Total(Rp)'] = hansyah_data['Monthly Pending Total(
 total_repayment_hansyah = hansyah_data['Repayment'].sum()
 total_unpaid_hansyah = hansyah_data['Monthly Pending Total(Rp)'].sum()
 
-st.write(f"**Total Repayment (Team Hansyah_S2l):** Rp {total_repayment_hansyah:,.0f}")
-st.write(f"**Total Unpaid (Team Hansyah_S2l):** Rp {total_unpaid_hansyah:,.0f}")
+st.write(f"**Total Repayment :** Rp {total_repayment_hansyah:,.0f}")
+st.write(f"**Total Unpaid :** Rp {total_unpaid_hansyah:,.0f}")
 
