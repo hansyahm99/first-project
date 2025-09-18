@@ -26,7 +26,7 @@ values = list(Data.values())
 
 # Bar Chart
 fig1, ax1 = plt.subplots(figsize=(10, 4))
-ax1.barh(nama, values, color='teal')
+ax1.barh(nama, values, color='magenta')
 ax1.set_title(f"Report Daily {today} (Target Rp 7.000.000)", fontweight='bold')
 ax1.set_xlim(0, max(values)*1.1)
 ax1.set_xlabel("Repayment Amount")
