@@ -12,6 +12,7 @@ today = datetime.today().strftime('%d %B %Y')
 # ===================== DAILY REPORT =====================
 st.header(f"📅 Report Daily - {today}")
 df_daily = pd.read_excel("riska.xlsx")[['Collector', 'Repayment_amount']].fillna(0)
+df_daily = df_daily[df_daily['Collector'] != 'Hansyah Martha Kusuma D']
 df_daily["Repayment_amount"] = (
     df_daily['Repayment_amount'].astype(str)
     .str.replace(',', '')
