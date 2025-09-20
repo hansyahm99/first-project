@@ -94,7 +94,7 @@ hasil = list(Monthly.values())
 
 # Bar Chart
 fig3, ax3 = plt.subplots(figsize=(12, 6))
-ax3.barh(bulan, hasil, color='orange')
+ax3.barh(bulan, hasil, color='teal')
 ax3.set_title("Monthly Pending Recovery (Target: 12.52%)", fontweight='bold')
 ax3.set_xlabel("Pending Amount Recovery")
 ax3.get_xaxis().set_visible(False)
