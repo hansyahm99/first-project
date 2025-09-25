@@ -112,9 +112,9 @@ for i, val in enumerate(hasil):
     if val > 0:
         label = format_number(val)
         if val > 1:
-            ax3.text(val - 0.3, i, label, va='center', ha='right', fontsize=10, color='black')
+            ax3.text(val - 0.3, i, label, va='center', ha='right', fontsize=10, color='white')
         else:
-            ax3.text(val + 0.3, i, label, va='center', ha='right', fontsize=10, color='black')
+            ax3.text(val + 0.3, i, label, va='center', ha='right', fontsize=10, color='white')
 
 ax3.invert_yaxis()
 
