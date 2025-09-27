@@ -61,6 +61,12 @@ else:
     user_files = USER_CREDENTIALS[st.session_state.username]["files"]
 
     # ===================== NAVIGATION =====================
+    profile_pic_path = f"user_data/profile_pics/{st.session_state.username}.png"
+    if os.path.exists(profile_pic_path):
+        st.sidebar.image(profile_pic_path, width=100)
+    else:
+        st.sidebar.image("https://img.icons8.com/color/96/user-male-circle--v1.png", width=80)
+
     st.sidebar.title(f"👤 {st.session_state.username}")
     st.sidebar.markdown("**Menu Report:**")
     report_option = st.sidebar.radio(
@@ -72,7 +78,8 @@ else:
          '📌 Summary report',
          '💾 Update Data',
          '💬 Group Chat',
-         '📩 Private Chat')
+         '📩 Private Chat',
+         '⚙️ Settings')
     )
 
     # ===================== DAILY REPORT =====================
@@ -302,13 +309,14 @@ else:
                 "Kolom1": pd.Series(dtype="str"),   # string
                 "Kolom2": pd.Series(dtype="str"),   # string
                 "Kolom3": pd.Series(dtype="float"), # angka
+                "Kolom4": pd.Series(dtype="float")  # angka
             })
             df_user.to_excel(user_data_file, index=False)
         else:
             # Baca excel: Kolom1 & Kolom2 jadi string, Kolom3 angka
             df_user = pd.read_excel(
                 user_data_file,
-                dtype={"Kolom1": str, "Kolom2": str, "Kolom3": float}
+                dtype={"Kolom1": str, "Kolom2": str, "Kolom3": float, "Kolom4": float}
             )
 
         st.write("Data pribadi kamu (seperti Excel):")
@@ -437,6 +445,73 @@ else:
             df_chat = pd.concat([df_chat, new_row], ignore_index=True)
             df_chat.to_csv(chat_file, index=False)
             st.rerun()
+
+#----------------halaman Setting-----------
+
+    elif report_option == '⚙️ Settings':
+        st.header("⚙️ Pengaturan Akun")
+
+    # ---------- FOTO PROFIL ----------
+        st.subheader("🖼 Ganti Foto Profil")
+        os.makedirs("user_data/profile_pics", exist_ok=True)
+        profile_pic_path = f"user_data/profile_pics/{st.session_state.username}.png"
+
+    # Tampilkan foto jika ada
+        if os.path.exists(profile_pic_path):
+            st.image(profile_pic_path, width=100, caption="Foto Profil Saat Ini")
+
+        uploaded_image = st.file_uploader("Upload foto baru (.png, .jpg, .jpeg)", type=["png", "jpg", "jpeg"])
+        if uploaded_image:
+            with open(profile_pic_path, "wb") as f:
+                f.write(uploaded_image.read())
+            st.success("Foto profil berhasil diperbarui ✅")
+            st.rerun()
+
+    # ---------- GANTI PASSWORD ----------
+        st.subheader("🔑 Ganti Password")
+        old_password = st.text_input("Password Lama", type="password")
+        new_password = st.text_input("Password Baru", type="password")
+        confirm_password = st.text_input("Konfirmasi Password Baru", type="password")
+
+        if st.button("Ubah Password"):
+            current_password = USER_CREDENTIALS[st.session_state.username]["password"]
+            if old_password != current_password:
+                st.error("Password lama salah ❌")
+            elif new_password != confirm_password:
+                st.error("Konfirmasi password tidak cocok ❌")
+            elif new_password == "":
+                st.warning("Password baru tidak boleh kosong")
+            else:
+                USER_CREDENTIALS[st.session_state.username]["password"] = new_password
+                st.success("Password berhasil diubah ✅ (Perubahan hanya berlaku selama runtime jika tidak disimpan permanen)")
+    
+        st.markdown("⚠️ *Catatan: Password akan hilang jika aplikasi dimuat ulang kecuali kamu menyimpan ke file JSON / DB.*")
+
+    # ---------- HAPUS CHAT GRUP ----------
+        st.subheader("🧹 Hapus Riwayat Chat Grup")
+        if st.button("🗑 Hapus Semua Chat Grup"):
+            chat_file = "user_data/group_chat.csv"
+            if os.path.exists(chat_file):
+                df_empty = pd.DataFrame(columns=["id", "username", "time", "message"])
+                df_empty.to_csv(chat_file, index=False)
+                st.success("Riwayat chat grup berhasil dihapus ✅")
+            else:
+                st.info("Belum ada chat grup untuk dihapus.")
+
+    # ---------- HAPUS CHAT PRIVAT ----------
+        st.subheader("🧹 Hapus Riwayat Chat Privat")
+        chat_dir = "user_data/private_chats"
+        if os.path.exists(chat_dir):
+            user_files = [f for f in os.listdir(chat_dir) if st.session_state.username in f]
+            if user_files:
+                for file in user_files:
+                    if st.button(f"🗑 Hapus Chat dengan {file.replace('.csv','').replace(st.session_state.username, '').replace('_','')}"):
+                        os.remove(os.path.join(chat_dir, file))
+                        st.success(f"Riwayat chat privat dengan {file} berhasil dihapus ✅")
+            else:
+                st.info("Tidak ada riwayat chat privat.")
+        else:
+            st.info("Folder chat privat belum dibuat.")
 
     # ===================== LOGOUT =====================
     if st.sidebar.button("🚪 Logout"):
