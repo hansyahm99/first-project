@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 import os
+from streamlit_autorefresh import st_autorefresh
 
 # ------------------- SETUP -------------------
 st.set_page_config(page_title="Dashboard S2", layout="wide")
@@ -336,7 +337,8 @@ else:
             with open(notes_file, "w", encoding="utf-8") as f:
                 f.write(new_notes)
             st.success("Catatan berhasil disimpan ✅")
-            # ===================== GROUP CHAT =====================
+
+    # ===================== GROUP CHAT =====================
     elif report_option == '💬 Group Chat':
         st.header("💬 Group Chat Dashboard S2")
 
@@ -344,15 +346,28 @@ else:
         os.makedirs("user_data", exist_ok=True)
 
         if not os.path.exists(chat_file):
-            df_chat = pd.DataFrame(columns=["username", "time", "message"])
+            df_chat = pd.DataFrame(columns=["id", "username", "time", "message"])
             df_chat.to_csv(chat_file, index=False)
 
         df_chat = pd.read_csv(chat_file)
 
+    # 🔄 AUTO REFRESH KHUSUS GRUP CHAT
+        st_autorefresh(interval=1500, limit=None, key="chat_refresh")
+
         if not df_chat.empty:
-            for _, row in df_chat.iterrows():
+            for idx, row in df_chat.iterrows():
                 with st.chat_message("user"):
-                    st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
+                    if row['message'] == "__deleted__": 
+                        st.markdown(f"**{row['username']} ({row['time']})**: 🗑 Pesan ini telah dihapus")
+                    else:
+                        st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
+
+                # tombol hapus hanya muncul untuk pengirim pesan
+                    if row['username'] == st.session_state.username:
+                        if st.button("Hapus", key=f"del_{idx}"):
+                            df_chat.loc[idx, "message"] = "__deleted__"
+                            df_chat.to_csv(chat_file, index=False)
+                            st.rerun()
         else:
             st.info("Belum ada chat, ayo mulai ngobrol 🚀")
 
@@ -360,6 +375,7 @@ else:
         if new_msg:
             now = datetime.now().strftime("%H:%M:%S")
             new_row = pd.DataFrame([{
+                "id": len(df_chat) + 1,
                 "username": st.session_state.username,
                 "time": now,
                 "message": new_msg
@@ -383,16 +399,29 @@ else:
         chat_file = os.path.join(chat_dir, f"{users_pair}.csv")
 
         if not os.path.exists(chat_file):
-            df_chat = pd.DataFrame(columns=["username", "time", "message"])
+            df_chat = pd.DataFrame(columns=["id", "username", "time", "message"])
             df_chat.to_csv(chat_file, index=False)
 
         df_chat = pd.read_csv(chat_file)
 
+    # 🔄 AUTO REFRESH KHUSUS PRIVATE CHAT
+        st_autorefresh(interval=1500, limit=None, key="private_refresh")
+
         if not df_chat.empty:
-            for _, row in df_chat.iterrows():
+            for idx, row in df_chat.iterrows():
                 role = "assistant" if row['username'] == st.session_state.username else "user"
                 with st.chat_message(role):
-                    st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
+                    if row['message'] == "__deleted__":
+                        st.markdown(f"**{row['username']} ({row['time']})**: 🗑 Pesan ini telah dihapus")
+                    else:
+                        st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
+
+                # tombol hapus hanya muncul untuk pengirim pesan
+                    if row['username'] == st.session_state.username:
+                        if st.button("Hapus", key=f"del_priv_{idx}"):
+                            df_chat.loc[idx, "message"] = "__deleted__"
+                            df_chat.to_csv(chat_file, index=False)
+                            st.rerun()
         else:
             st.info(f"Belum ada chat dengan {target_user}")
 
@@ -400,6 +429,7 @@ else:
         if new_msg:
             now = datetime.now().strftime("%H:%M:%S")
             new_row = pd.DataFrame([{
+                "id": len(df_chat) + 1,
                 "username": st.session_state.username,
                 "time": now,
                 "message": new_msg
@@ -407,7 +437,6 @@ else:
             df_chat = pd.concat([df_chat, new_row], ignore_index=True)
             df_chat.to_csv(chat_file, index=False)
             st.rerun()
-
 
     # ===================== LOGOUT =====================
     if st.sidebar.button("🚪 Logout"):
