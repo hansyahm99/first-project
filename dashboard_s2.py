@@ -102,7 +102,7 @@ else:
          '💾 Update Data',
          '💬 Group Chat',
          '📩 Private Chat',
-         📂 File Manager'
+         '📂 File Manager',
          '⚙️ Settings')
     )
 
