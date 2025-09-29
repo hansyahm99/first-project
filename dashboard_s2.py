@@ -667,59 +667,76 @@ else:
     
     # ===================== FILE MANAGER =====================
     elif report_option == '📂 File Manager':
-        st.header("📂 File Manager")
+        st.header("📂 File Manager (File pribadi per akun)")
 
-        UPLOAD_DIR = "user_uploads"
-        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        UPLOAD_ROOT = os.path.join("user_data", "uploads")
+        user_dir = os.path.join(UPLOAD_ROOT, st.session_state.username)
+        os.makedirs(user_dir, exist_ok=True)
 
-    # --- Upload file ---
-        uploaded_file = st.file_uploader(
-            "Upload file (xlsx, csv, txt, pdf, png, jpg, jpeg)",
-            type=["xlsx", "csv", "txt", "pdf", "png", "jpg", "jpeg"]
+        def sanitize_filename(fname: str) -> str:
+            fname = fname.replace("..", "")
+            fname = fname.replace("/", "_").replace("\\", "_")
+            fname = fname.strip().replace(" ", "_")
+            return fname
+
+        uploaded_files = st.file_uploader(
+            "Upload file (xlsx, csv, txt, pdf, png, jpg, jpeg) — file hanya untuk akunmu",
+            type=["xlsx", "xls", "csv", "txt", "pdf", "png", "jpg", "jpeg"],
+            accept_multiple_files=True
         )
-        if uploaded_file:
-            save_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
-            with open(save_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success(f"✅ File berhasil disimpan: {uploaded_file.name}")
 
-        # --- Preview isi file ---
-            ext = uploaded_file.name.split(".")[-1].lower()
-            if ext == "xlsx":
-                df = pd.read_excel(save_path)
-                st.dataframe(df)
-            elif ext == "csv":
-                df = pd.read_csv(save_path)
-                st.dataframe(df)
-            elif ext == "txt":
-                with open(save_path, "r", encoding="utf-8") as f:
-                    st.text_area("Isi TXT:", f.read(), height=200)
-            elif ext in ["png", "jpg", "jpeg"]:
-                st.image(save_path, width=300)
-            elif ext == "pdf":
-                st.info("📄 PDF berhasil diupload (preview tidak didukung).")
+        if uploaded_files:
+            for uploaded_file in uploaded_files:
+                safe_name = sanitize_filename(uploaded_file.name)
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                save_name = f"{timestamp}_{safe_name}"
+                save_path = os.path.join(user_dir, save_name)
 
-    # --- Daftar file tersimpan ---
-        st.subheader("📑 File Tersimpan")
-        files = os.listdir(UPLOAD_DIR)
+                with open(save_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+
+                st.success(f"✅ File disimpan: {save_name}")
+
+                ext = safe_name.split(".")[-1].lower()
+                try:
+                    if ext in ("xlsx", "xls"):
+                        df = pd.read_excel(save_path)
+                        st.dataframe(df)
+                    elif ext == "csv":
+                        df = pd.read_csv(save_path)
+                        st.dataframe(df)
+                    elif ext == "txt":
+                        with open(save_path, "r", encoding="utf-8", errors="ignore") as f:
+                            st.text_area("Isi TXT:", f.read(), height=200)
+                    elif ext in ("png", "jpg", "jpeg"):
+                        st.image(save_path, width=300)
+                    elif ext == "pdf":
+                        st.info("PDF berhasil diupload — preview PDF tidak tersedia.")
+                except Exception as e:
+                    st.warning(f"Preview gagal: {e}")
+
+        st.markdown("---")
+        st.subheader("📑 File kamu")
+        files = sorted(os.listdir(user_dir), reverse=True)
         if files:
-            for file in files:
-                file_path = os.path.join(UPLOAD_DIR, file)
-
-            # download button
-                with open(file_path, "rb") as f:
-                    st.download_button(
-                        label=f"⬇️ Download {file}",
-                        data=f,
-                        file_name=file
-                    )
-            # delete button
-                if st.button(f"🗑️ Hapus {file}", key=f"del_{file}"):
-                    os.remove(file_path)
-                    st.warning(f"{file} dihapus!")
-                    st.experimental_rerun()
+            for fname in files:
+                file_path = os.path.join(user_dir, fname)
+                col1, col2, col3 = st.columns([6, 1, 1])
+                with col1:
+                    st.write(fname)
+                with col2:
+                    try:
+                        with open(file_path, "rb") as f:
+                            st.download_button("⬇️", f, file_name=fname, key=f"dl_{fname}")
+                    except:
+                        st.error("Download gagal")
+                with col3:
+                    if st.button("🗑️", key=f"del_{fname}"):
+                        os.remove(file_path)
+                        st.warning(f"{fname} dihapus")
+                        st.experimental_rerun()
         else:
-            st.info("Belum ada file yang diupload.")
+            st.info("Belum ada file.")
 
     # ===================== LOGOUT =====================
     if st.sidebar.button("🚪 Logout"):
