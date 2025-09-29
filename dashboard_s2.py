@@ -102,7 +102,8 @@ else:
          '💾 Update Data',
          '💬 Group Chat',
          '📩 Private Chat',
-         '⚙️ Settings')
+         '⚙️ Settings',
+         "📂 File Manager")
     )
 
     # ===================== DAILY REPORT =====================
@@ -663,6 +664,62 @@ else:
                 st.info("Tidak ada riwayat chat privat.")
         else:
             st.info("Folder chat privat belum dibuat.")
+    
+    # ===================== FILE MANAGER =====================
+    elif report_option == '📂 File Manager':
+        st.header("📂 File Manager")
+
+        UPLOAD_DIR = "user_uploads"
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+    # --- Upload file ---
+        uploaded_file = st.file_uploader(
+            "Upload file (xlsx, csv, txt, pdf, png, jpg, jpeg)",
+            type=["xlsx", "csv", "txt", "pdf", "png", "jpg", "jpeg"]
+        )
+        if uploaded_file:
+            save_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
+            with open(save_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            st.success(f"✅ File berhasil disimpan: {uploaded_file.name}")
+
+        # --- Preview isi file ---
+            ext = uploaded_file.name.split(".")[-1].lower()
+            if ext == "xlsx":
+                df = pd.read_excel(save_path)
+                st.dataframe(df)
+            elif ext == "csv":
+                df = pd.read_csv(save_path)
+                st.dataframe(df)
+            elif ext == "txt":
+                with open(save_path, "r", encoding="utf-8") as f:
+                    st.text_area("Isi TXT:", f.read(), height=200)
+            elif ext in ["png", "jpg", "jpeg"]:
+                st.image(save_path, width=300)
+            elif ext == "pdf":
+                st.info("📄 PDF berhasil diupload (preview tidak didukung).")
+
+    # --- Daftar file tersimpan ---
+        st.subheader("📑 File Tersimpan")
+        files = os.listdir(UPLOAD_DIR)
+        if files:
+            for file in files:
+                file_path = os.path.join(UPLOAD_DIR, file)
+
+            # download button
+                with open(file_path, "rb") as f:
+                    st.download_button(
+                        label=f"⬇️ Download {file}",
+                        data=f,
+                        file_name=file
+                    )
+            # delete button
+                if st.button(f"🗑️ Hapus {file}", key=f"del_{file}"):
+                    os.remove(file_path)
+                    st.warning(f"{file} dihapus!")
+                    st.experimental_rerun()
+        else:
+            st.info("Belum ada file yang diupload.")
 
     # ===================== LOGOUT =====================
     if st.sidebar.button("🚪 Logout"):
