@@ -4,11 +4,34 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import os
 from streamlit_autorefresh import st_autorefresh
+import base64
+import pytz
+from datetime import datetime
 
-# ------------------- SETUP -------------------
+    # ------------------- FUNGSI NOTIFIKASI -------------------
+def play_sound():
+    sound_file = "notif.mp3"  # file mp3 harus ada di folder project
+    if os.path.exists(sound_file):
+        with open(sound_file, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode()
+            md = f"""
+            <audio autoplay>
+            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            </audio>
+            """
+            st.markdown(md, unsafe_allow_html=True)
+
+def show_notification(msg):
+    st.toast(f"🔔 {msg}")
+    play_sound()
+
+    # ------------------- SETUP -------------------
 st.set_page_config(page_title="Dashboard S2", layout="wide")
 
-# ================= LOGIN DATA =================
+    #pastikan folder utama ada
+os.makedirs("user_data", exist_ok=True)
+os.makedirs("user_data/chat_images", exist_ok=True)
+        # ================= LOGIN DATA =================
 USER_CREDENTIALS = {
     "hansyah": {"password": "12345", "files": {"daily": "riska.xlsx", "cycle": "riskuy.xlsx", "monthly": "nurlita.xlsx", "rank": "risnur.xlsx"}},
     "riska": {"password": "riskacantik", "files": {"daily": "riska.xlsx", "cycle": "riskuy.xlsx", "monthly": "nurlita.xlsx", "rank": "risnur.xlsx"}},
@@ -28,16 +51,14 @@ USER_CREDENTIALS = {
     "feronika": {"password": "12345", "files": {"daily": "riska.xlsx", "cycle": "riskuy.xlsx", "monthly": "nurlita.xlsx", "rank": "risnur.xlsx"}},
     "afrian": {"password": "12345", "files": {"daily": "riska.xlsx", "cycle": "riskuy.xlsx", "monthly": "nurlita.xlsx", "rank": "risnur.xlsx"}},
     "ayat": {"password": "12345", "files": {"daily": "riska.xlsx", "cycle": "riskuy.xlsx", "monthly": "nurlita.xlsx", "rank": "risnur.xlsx"}},
-    "nurani": {"password": "12345", "files": {"daily": "riska.xlsx", "cycle": "riskuy.xlsx", "monthly": "nurlita.xlsx", "rank": "risnur.xlsx"}},
 }
-
-# ================= SESSION LOGIN =================
+    # ================= SESSION LOGIN =================
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
     st.session_state.username = None
 
-# ================= LOGIN PAGE =================
+    # ================= LOGIN PAGE =================
 if not st.session_state.logged_in:
     st.title("🔑 Login Dashboard S2")
 
@@ -53,7 +74,7 @@ if not st.session_state.logged_in:
         else:
             st.error("ID atau Password salah ❌")
 
-# ================= DASHBOARD =================
+    # ================= DASHBOARD =================
 else:
     st.title("📊 Dashboard Report S2")
     today = datetime.today().strftime('%d %B %Y')
@@ -273,7 +294,7 @@ else:
     elif report_option == '💾 Update Data':
         st.header("💾 Update / Tambah Data")
 
-        # --- FITUR UPDATE FILE REPORT ---
+    # --- FITUR UPDATE FILE REPORT ---
         file_choice = st.selectbox("Pilih file report yang mau diupdate:", list(user_files.keys()))
         target_file = user_files[file_choice]
 
@@ -299,12 +320,12 @@ else:
                 st.success("Data berhasil ditambahkan ✅")
                 st.dataframe(df_existing)
 
-        # --- FITUR DATA PRIBADI USER ---
+    # --- FITUR DATA PRIBADI USER ---
         st.subheader("📒 Data Pribadi User")
         os.makedirs("user_data", exist_ok=True)
         user_data_file = f"user_data/{st.session_state.username}.xlsx"
 
-        # Kalau file belum ada, buat dengan tipe kolom sesuai permintaan
+    # Kalau file belum ada, buat dengan tipe kolom sesuai permintaan
         if not os.path.exists(user_data_file):
             df_user = pd.DataFrame({
                 "Kolom1": pd.Series(dtype="str"),   # string
@@ -314,7 +335,7 @@ else:
             })
             df_user.to_excel(user_data_file, index=False)
         else:
-            # Baca excel: Kolom1 & Kolom2 jadi string, Kolom3 angka
+    # Baca excel: Kolom1 & Kolom2 jadi string, Kolom3 angka
             df_user = pd.read_excel(
                 user_data_file,
                 dtype={"Kolom1": str, "Kolom2": str, "Kolom3": float, "Kolom4": float}
@@ -327,7 +348,7 @@ else:
             edited_df.to_excel(user_data_file, index=False)
             st.success("Data pribadi berhasil disimpan ✅")
 
-        # --- FITUR NOTED PRIBADI ---
+    # --- FITUR NOTED PRIBADI ---
         st.subheader("📝 Noted Pribadi")
         notes_file = f"user_data/{st.session_state.username}_notes.txt"
 
@@ -335,11 +356,11 @@ else:
             with open(notes_file, "w", encoding="utf-8") as f:
                 f.write("")
 
-        # Baca isi notes
+    # Baca isi notes
         with open(notes_file, "r", encoding="utf-8") as f:
             current_notes = f.read()
 
-        # Text area untuk edit notes
+    # Text area untuk edit notes
         new_notes = st.text_area("Tulis catatan pribadimu di sini:", current_notes, height=200)
 
         if st.button("💾 Simpan Noted"):
@@ -353,12 +374,30 @@ else:
 
         chat_file = "user_data/group_chat.csv"
         os.makedirs("user_data", exist_ok=True)
+        os.makedirs("user_data/chat_images", exist_ok=True)
 
         if not os.path.exists(chat_file):
             df_chat = pd.DataFrame(columns=["id", "username", "time", "message"])
             df_chat.to_csv(chat_file, index=False)
 
         df_chat = pd.read_csv(chat_file)
+
+    # ==== CEK PESAN BARU UNTUK NOTIFIKASI ====
+        last_seen_file = f"user_data/last_seen_{st.session_state.username}_group.txt"
+        if os.path.exists(last_seen_file):
+            with open(last_seen_file, "r") as f:
+                last_seen = f.read().strip()
+        else:
+            last_seen = "00:00:00"
+
+        new_msgs = df_chat[df_chat["time"] > last_seen]
+        if not new_msgs.empty and new_msgs.iloc[-1]["username"] != st.session_state.username:
+            show_notification(f"{len(new_msgs)} pesan baru di Group Chat!")
+
+    # update last_seen
+        if not df_chat.empty:
+            with open(last_seen_file, "w") as f:
+                f.write(df_chat.iloc[-1]["time"])
 
     # 🔄 AUTO REFRESH KHUSUS GRUP CHAT
         st_autorefresh(interval=1500, limit=None, key="chat_refresh")
@@ -369,9 +408,26 @@ else:
                     if row['message'] == "__deleted__": 
                         st.markdown(f"**{row['username']} ({row['time']})**: 🗑 Pesan ini telah dihapus")
                     else:
-                        st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
+    # 🔥 CEK APAKAH PESAN GAMBAR ATAU TEKS
+                        if str(row['message']).startswith("__img__"):
+                            img_path = row['message'].replace("__img__:", "")
+                            if os.path.exists(img_path):
+                                st.markdown(f"**{row['username']} ({row['time']})** mengirim gambar:")
+                                st.image(img_path, width=200)
+                                with open(img_path, "rb") as file:
+                                    st.download_button(
+                                        label="⬇️ Download Gambar",
+                                        data=file,
+                                        file_name=os.path.basename(img_path),
+                                        mime="image/png",
+                                        key=f"dl_{idx}"  # unik per pesan
+                                    )
+                            else:
+                                st.warning("❌ Gambar tidak ditemukan")
+                        else:
+                            st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
 
-                # tombol hapus hanya muncul untuk pengirim pesan
+    # tombol hapus hanya muncul untuk pengirim pesan
                     if row['username'] == st.session_state.username:
                         if st.button("Hapus", key=f"del_{idx}"):
                             df_chat.loc[idx, "message"] = "__deleted__"
@@ -380,9 +436,15 @@ else:
         else:
             st.info("Belum ada chat, ayo mulai ngobrol 🚀")
 
-        new_msg = st.chat_input("Ketik pesanmu di sini...")
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            new_msg = st.chat_input("Ketik pesanmu di sini...")
+        with col2:
+            uploaded_img = st.file_uploader("📷", type=["png", "jpg", "jpeg"], label_visibility="collapsed")
+
         if new_msg:
-            now = datetime.now().strftime("%H:%M:%S")
+            from zoneinfo import ZoneInfo
+            now = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S")
             new_row = pd.DataFrame([{
                 "id": len(df_chat) + 1,
                 "username": st.session_state.username,
@@ -392,6 +454,28 @@ else:
             df_chat = pd.concat([df_chat, new_row], ignore_index=True)
             df_chat.to_csv(chat_file, index=False)
             st.rerun()
+        
+        if uploaded_img and "last_uploaded" not in st.session_state:
+            from zoneinfo import ZoneInfo
+            now = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S")
+            img_path = f"user_data/chat_images/{st.session_state.username}_{now.replace(':','-')}_{uploaded_img.name}"
+            with open(img_path, "wb") as f:
+                f.write(uploaded_img.read())
+
+            new_row = pd.DataFrame([{
+                "id": len(df_chat) + 1,
+                "username": st.session_state.username,
+                "time": now,
+                "message": f"__img__:{img_path}"
+            }])
+            df_chat = pd.concat([df_chat, new_row], ignore_index=True)
+            df_chat.to_csv(chat_file, index=False)
+
+            st.session_state["last_uploaded"] = uploaded_img.name
+            st.rerun()
+            
+        if uploaded_img is None and "last_uploaded" in st.session_state:
+            del st.session_state["last_uploaded"]
 
     # ===================== PRIVATE CHAT =====================
     elif report_option == '📩 Private Chat':
@@ -413,6 +497,24 @@ else:
 
         df_chat = pd.read_csv(chat_file)
 
+    # ==== CEK PESAN BARU UNTUK NOTIFIKASI ====
+        last_seen_file = f"user_data/last_seen_{st.session_state.username}_{target_user}.txt"
+        if os.path.exists(last_seen_file):
+            with open(last_seen_file, "r") as f:
+                last_seen = f.read().strip()
+        else:
+            last_seen = "00:00:00"
+
+        new_msgs = df_chat[(df_chat["time"] > last_seen) & (df_chat["username"] != st.session_state.username)]
+        if not new_msgs.empty:
+            show_notification(f"{len(new_msgs)} pesan baru dari {target_user}")
+
+    # update last_seen
+        if not df_chat.empty:
+            os.makedirs("user_data", exist_ok=True)
+            with open(last_seen_file, "w") as f:
+                f.write(df_chat.iloc[-1]["time"])
+
     # 🔄 AUTO REFRESH KHUSUS PRIVATE CHAT
         st_autorefresh(interval=1500, limit=None, key="private_refresh")
 
@@ -423,9 +525,26 @@ else:
                     if row['message'] == "__deleted__":
                         st.markdown(f"**{row['username']} ({row['time']})**: 🗑 Pesan ini telah dihapus")
                     else:
-                        st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
+    # 🔥 CEK PESAN GAMBAR ATAU TEKS
+                        if str(row['message']).startswith("__img__"):
+                            img_path = row['message'].replace("__img__:", "")
+                            if os.path.exists(img_path):
+                                st.markdown(f"**{row['username']} ({row['time']})** mengirim gambar:")
+                                st.image(img_path, width=200)  # tampil lebih proporsional
+                                with open(img_path, "rb") as file:
+                                    st.download_button(
+                                        label="⬇️ Download Gambar",
+                                        data=file,
+                                        file_name=os.path.basename(img_path),
+                                        mime="image/png",
+                                        key=f"dl_priv_{idx}"
+                                    )
+                            else:
+                                st.warning("❌ Gambar tidak ditemukan")
+                        else:
+                            st.markdown(f"**{row['username']} ({row['time']})**: {row['message']}")
 
-                # tombol hapus hanya muncul untuk pengirim pesan
+    # tombol hapus hanya muncul untuk pengirim pesan
                     if row['username'] == st.session_state.username:
                         if st.button("Hapus", key=f"del_priv_{idx}"):
                             df_chat.loc[idx, "message"] = "__deleted__"
@@ -434,9 +553,17 @@ else:
         else:
             st.info(f"Belum ada chat dengan {target_user}")
 
-        new_msg = st.chat_input(f"Ketik pesan ke {target_user}...")
+    # === INPUT PESAN & GAMBAR ===
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            new_msg = st.chat_input(f"Ketik pesan ke {target_user}...")
+        with col2:
+            uploaded_img = st.file_uploader("📷", type=["png", "jpg", "jpeg"], label_visibility="collapsed")
+
+    # === SIMPAN PESAN TEKS ===
         if new_msg:
-            now = datetime.now().strftime("%H:%M:%S")
+            from zoneinfo import ZoneInfo
+            now = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S")
             new_row = pd.DataFrame([{
                 "id": len(df_chat) + 1,
                 "username": st.session_state.username,
@@ -447,8 +574,30 @@ else:
             df_chat.to_csv(chat_file, index=False)
             st.rerun()
 
-#----------------halaman Setting-----------
+         # === SIMPAN PESAN GAMBAR ===
+        if uploaded_img and "last_uploaded" not in st.session_state:
+            from zoneinfo import ZoneInfo
+            now = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S")
+            img_path = f"user_data/chat_images/{st.session_state.username}_{now.replace(':','-')}_{uploaded_img.name}"
+            with open(img_path, "wb") as f:
+                f.write(uploaded_img.read())
 
+            new_row = pd.DataFrame([{
+                "id": len(df_chat) + 1,
+                "username": st.session_state.username,
+                "time": now,
+                "message": f"__img__:{img_path}"
+            }])
+            df_chat = pd.concat([df_chat, new_row], ignore_index=True)
+            df_chat.to_csv(chat_file, index=False)
+
+            st.session_state["last_uploaded"] = uploaded_img.name
+            st.rerun()
+
+        if uploaded_img is None and "last_uploaded" in st.session_state:
+            del st.session_state["last_uploaded"]
+
+#----------------halaman Setting-----------
     elif report_option == '⚙️ Settings':
         st.header("⚙️ Pengaturan Akun")
 
