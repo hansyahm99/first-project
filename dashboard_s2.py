@@ -102,8 +102,8 @@ else:
          '💾 Update Data',
          '💬 Group Chat',
          '📩 Private Chat',
-         '⚙️ Settings',
-         "📂 File Manager")
+         📂 File Manager'
+         '⚙️ Settings')
     )
 
     # ===================== DAILY REPORT =====================
