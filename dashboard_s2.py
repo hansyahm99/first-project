@@ -256,40 +256,33 @@ else:
             st.warning("Belum ada data Daily untuk user ini.")
 
     # ===================== CYCLE REPORT =====================
-    elif report_option == '🔁 Report Cycle S2':
+     elif report_option == '🔁 Report Cycle S2':
         st.header(f"🔁 Report Cycle S2 - {today}")
-        target_path = user_files.get("cycle", "")
-        if target_path and os.path.exists(target_path):
-            df_cycle = load_excel_safe(target_path)
-            if 'Team' in df_cycle.columns and 'Recovery rate' in df_cycle.columns:
-                df_cycle = df_cycle[['Team', 'Recovery rate']].fillna(0)
-                def to_float_percent(x):
-                    try:
-                        s = str(x).replace(',', '.').replace('%', '')
-                        return float(s)
-                    except Exception:
-                        return 0.0
-                df_cycle["Recovery rate float"] = df_cycle['Recovery rate'].apply(to_float_percent)
-                df_cycle["Recovery rate str"] = df_cycle["Recovery rate float"].map(lambda x: f"{x:.3f}")
-                df_cycle["Label"] = df_cycle["Team"] + " (" + df_cycle["Recovery rate str"] + "%)"
-                team = df_cycle["Label"].tolist()
-                rate = df_cycle["Recovery rate float"].tolist()
-                fig2, ax2 = plt.subplots(figsize=(3.5, 3.5), dpi=120)
-                if sum(rate) > 0:
-                    patches, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, textprops={'fontsize': 6})
-                else:
-                    ax2.text(0.5, 0.5, "No Data", horizontalalignment='center')
-                ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize=8, fontweight='bold')
-                ax2.axis('equal')
-                if team:
-                    ax2.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=6, ncol=1)
-                st.pyplot(fig2)
-                st.dataframe(df_cycle[['Team', 'Recovery rate']])
-            else:
-                st.warning("Kolom 'Team' atau 'Recovery rate' tidak ditemukan pada file Cycle.")
+        if os.path.exists(user_files["cycle"]):
+            df_cycle = pd.read_excel(user_files["cycle"])[['Team', 'Recovery rate']].fillna(0)
+            df_cycle["Recovery rate float"] = (
+                df_cycle['Recovery rate']
+                .astype(str)
+                .str.replace(',', '.')
+                .str.replace('%', '')
+                .astype(float)
+            )
+            df_cycle["Recovery rate str"] = df_cycle["Recovery rate float"].map(lambda x: f"{x:.3f}")
+            df_cycle["Label"] = df_cycle["Team"] + " (" + df_cycle["Recovery rate str"] + "%)"
+            team = df_cycle["Label"].tolist()
+            rate = df_cycle["Recovery rate float"].tolist()
+
+            fig2, ax2 = plt.subplots(figsize=(2.5, 2.5), dpi=200)
+            patches, texts, autotexts = ax2.pie(rate, autopct='%1.2f%%', startangle=140, colors=plt.cm.tab20.colors, textprops={'fontsize': 6})
+            ax2.set_title(f"Cycle S2 Recovery Rate (Target: 0.12)", fontsize=7, fontweight='bold')
+            ax2.axis('equal')
+            ax2.legend(patches, team, loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=6, ncol=3)
+
+            df_cycle.index = df_cycle.index + 1
+            st.pyplot(fig2)
+            st.dataframe(df_cycle[['Team', 'Recovery rate']])
         else:
             st.warning("Belum ada data Cycle untuk user ini.")
-
     # ===================== MONTHLY REPORT =====================
     elif report_option == '📆 Report Cycle Monthly':
         st.header("📆 Report Monthly")
