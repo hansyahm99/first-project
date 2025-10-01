@@ -256,7 +256,7 @@ else:
             st.warning("Belum ada data Daily untuk user ini.")
 
     # ===================== CYCLE REPORT =====================
-     elif report_option == '🔁 Report Cycle S2':
+    elif report_option == '🔁 Report Cycle S2':
         st.header(f"🔁 Report Cycle S2 - {today}")
         if os.path.exists(user_files["cycle"]):
             df_cycle = pd.read_excel(user_files["cycle"])[['Team', 'Recovery rate']].fillna(0)
