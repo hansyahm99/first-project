@@ -162,6 +162,7 @@ else:
             '📩 Private Chat',
             '📂 File Manager',
             '⚙️ Settings',
+            'Musik Muktar,
         )
     )
 
