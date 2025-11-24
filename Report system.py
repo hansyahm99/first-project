@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd 
 
-df = pd.read_excel("riska.xlsx")
+df = pd.read_excel("file.xlsx")
 df = df[['Collector','Repayment_amount']].copy()
 df = df.fillna(0)
 df["Repayment_amount"] = (df['Repayment_amount']
@@ -75,7 +75,7 @@ plt.tight_layout()
 plt.savefig("grafik_Cycle_S2.png", dpi=100)
 plt.show()
 
-df = pd.read_excel("nurlita.xlsx")
+df = pd.read_excel("file2.xlsx")
 df = df[['Collector','Pending Amount Recovery']].copy()
 df = df [df['Collector'] != 'Hansyah Martha Kusuma D']
 df = df.fillna(0)
